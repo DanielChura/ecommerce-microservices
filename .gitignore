@@ -1,0 +1,51 @@
+# Maven target directories
+target/
+**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.next
+pom.xml.versionsBackup
+pom.xml.backup
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.db
+.mvn/wrapper-wrapper.jar
+
+# Keep source directories clean
+!**/src/main/**/target/
+!**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# IDEs and Editors
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+.springBeans
+.sts4-cache
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+bin/
+
+# OS files
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Log files
+*.log
+
+# Local environment files
+.env
+.env.local
