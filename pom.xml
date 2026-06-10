@@ -14,13 +14,16 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ecommerce-microservices</name>
 	<packaging>pom</packaging>
+
 	<modules>
 		<module>config-server</module>
 		<module>discovery-server</module>
 		<module>microservices</module>
 	</modules>
+
 	<properties>
 		<java.version>25</java.version>
+		<spring-cloud.version>2025.1.1</spring-cloud.version>
 	</properties>
 
 	<dependencies>
@@ -28,6 +31,10 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 	</dependencies>
 
