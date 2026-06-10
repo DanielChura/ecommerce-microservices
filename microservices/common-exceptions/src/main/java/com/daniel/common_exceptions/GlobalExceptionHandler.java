@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
         var fieldName = "message";
         var errorMessage = "Something went wrong. Please try again later.";
         errors.put(fieldName, errorMessage);
-        log.error("Error: {}", exception.getMessage());
+        log.error("Unexpected error on {}: {}", request.getRequestURI(), exception.getMessage(), exception);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 new ErrorResponse(errorMessage, LocalDateTime.now(), request.getRequestURI(), errors));
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
             var message = error.getDefaultMessage();
             errors.put(fieldName, message);
         });
-        log.warn("Validation error: {}", exception.getMessage());
+        log.warn("Validation error on {}: {}", request.getRequestURI(), exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse("Validation error", LocalDateTime.now(), request.getRequestURI(), errors));
