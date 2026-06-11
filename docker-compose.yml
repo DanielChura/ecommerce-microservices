@@ -24,7 +24,7 @@ services:
     networks:
       - microservices
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://config-server:${CONFIG_SERVER_PORT}/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${CONFIG_SERVER_PORT}/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -45,7 +45,7 @@ services:
       config-server:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://discovery-server:${DISCOVERY_SERVER_PORT}/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${DISCOVERY_SERVER_PORT}/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -82,7 +82,7 @@ services:
       mongo-db:
         condition: service_started
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://customer-microservice:${CUSTOMER_MICROSERVICE_PORT}/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${CUSTOMER_MICROSERVICE_PORT}/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -109,7 +109,7 @@ services:
       postgres-db:
         condition: service_started
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://product-microservice:${PRODUCT_MICROSERVICE_PORT}/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${PRODUCT_MICROSERVICE_PORT}/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -143,6 +143,25 @@ services:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${DISCOVERY_SERVER_PORT}/eureka/
       - SPRING_MONGODB_URI=mongodb://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@mongo-db:${MONGO_DB_PORT}/${CART_DB_NAME}?authSource=admin
+    networks:
+      - microservices
+
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: .
+      dockerfile: ./api-gateway/Dockerfile
+    restart: on-failure
+    ports:
+      - "${API_GATEWAY_PORT}:8222"
+    depends_on:
+      config-server:
+        condition: service_started
+      discovery-server:
+        condition: service_started
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${DISCOVERY_SERVER_PORT}/eureka/
     networks:
       - microservices
       
