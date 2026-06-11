@@ -1,3 +1,3 @@
-spring:
-    application:
-        name: common-exceptions
+# Intentionally empty - this is a library JAR, not a Spring Boot application.
+# An application.yml with spring.application.name here would pollute
+# the config namespace of any service that depends on this library.

@@ -38,7 +38,7 @@ services:
     ports:
       - "${DISCOVERY_SERVER_PORT}:8761"
     environment:
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:${CONFIG_SERVER_PORT}
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
     networks:
       - microservices
     depends_on:
@@ -87,9 +87,9 @@ services:
       timeout: 10s
       retries: 5
     environment:
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:${CONFIG_SERVER_PORT}
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${DISCOVERY_SERVER_PORT}/eureka/
-      - SPRING_DATA_MONGODB_URI=mongodb://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@mongo-db:${MONGO_DB_PORT}/${CUSTOMER_DB_NAME}?authSource=admin
+      - SPRING_MONGODB_URI=mongodb://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@mongo-db:${MONGO_DB_PORT}/${CUSTOMER_DB_NAME}?authSource=admin
     networks:
       - microservices
 
@@ -114,11 +114,35 @@ services:
       timeout: 10s
       retries: 5
     environment:
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server:${CONFIG_SERVER_PORT}
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${DISCOVERY_SERVER_PORT}/eureka/
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:${POSTGRESQL_DB_PORT}/${PRODUCT_DB_NAME}
       - SPRING_DATASOURCE_USERNAME=${POSTGRESQL_DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRESQL_DB_PASSWORD}
+    networks:
+      - microservices
+
+  cart-microservice:
+    container_name: cart-microservice
+    build:
+      context: .
+      dockerfile: ./microservices/cart-microservice/Dockerfile
+    restart: on-failure
+    ports:
+      - "${CART_MICROSERVICE_PORT}:8093"
+    depends_on:
+      config-server:
+        condition: service_started
+      discovery-server:
+        condition: service_started
+      mongo-db:
+        condition: service_started
+    volumes:
+      - ./microservices/cart-microservice/logs:/app/logs
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:${CONFIG_SERVER_PORT}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:${DISCOVERY_SERVER_PORT}/eureka/
+      - SPRING_MONGODB_URI=mongodb://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@mongo-db:${MONGO_DB_PORT}/${CART_DB_NAME}?authSource=admin
     networks:
       - microservices
       

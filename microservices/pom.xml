@@ -17,6 +17,7 @@
         <module>customer-microservice</module>
         <module>common-exceptions</module>
         <module>product-microservice</module>
+        <module>cart-microservice</module>
     </modules>
 
     <dependencies>
